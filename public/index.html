@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/static/django_candy/img/apple-touch-icon.png" />
+    <!--<link rel="manifest" href="%PUBLIC_URL%/manifest.json" />-->
+    <link rel="stylesheet" href="%PUBLIC_URL%/static/django_candy/bootstrap/css/bootstrap-grid.min.css" />
+    <link rel="stylesheet" href="%PUBLIC_URL%/static/django_candy/bootstrap/icons/bootstrap-icons.css" />
+    <title>Candy</title>
+
+    <script type="text/javascript">
+      window.candy = {
+        site_name: 'Candy',
+        base_admin_url: '/candy/',
+      }
+    </script>
+
+    <style>
+      .loader {
+        width: 32px;
+        height: 32px;
+        clear: both;
+        margin: 20px auto;
+      }
+
+      .loader.circle {
+        border: 4px #B2DFDB solid;
+        border-top: 4px #009688 solid;
+        border-radius: 50%;
+        -webkit-animation: rotateLoader .4s infinite linear;
+        animation: rotateLoader .4s infinite linear;
+      }
+
+      @-webkit-keyframes rotateLoader {
+        from {
+          -webkit-transform: rotate(0deg);
+        }
+        to {
+          -webkit-transform: rotate(359deg);
+        }
+      }
+      @keyframes rotateLoader {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(359deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root">
+      <div style="font-family: sans-serif; position: absolute; display: table; left: 0; right: 0; margin: auto; top: 25%; width: 100%; text-align: center;">
+        <img src="%PUBLIC_URL%/static/django_candy/img/logo-splash.png" style="display: table; margin: auto; margin-top: 3rem; height: 124px; width: auto;" alt="Candy">
+        <div class="loader circle"></div>
+      </div>
+    </div>
+  </body>
+</html>
