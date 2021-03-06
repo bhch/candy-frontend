@@ -89,7 +89,7 @@ export class ListPage extends Component {
         this.state = {
             data: null,
             loading: true,
-            limit: 20
+            list_limit: 20 // :TODO: get this value from backend
         };
 
         this.api_endpoint = this.props.model.endpoint;
@@ -156,7 +156,7 @@ export class ListPage extends Component {
                     <div className="col-12">
                         <Pagination 
                             total_count={this.state.data.count}
-                            per_page={this.state.data.count}
+                            per_page={this.state.list_limit}
                             currentPage={this.getCurrentPage()}
                         />
                     </div>
