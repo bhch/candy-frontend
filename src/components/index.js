@@ -9,6 +9,7 @@ import {SkeletonTable, SkeletonForm} from './skeletons.js';
 import Pagination from './pagination.js'; 
 import {Button, DropdownButton} from './buttons.js';
 import {Splash, ErrorSplash} from './splash.js';
+import {FormInput} from './forms.js';
 
 
 export {
@@ -22,5 +23,6 @@ export {
     SkeletonTable, SkeletonForm,
     Pagination,
     Button, DropdownButton,
-    Splash, ErrorSplash
+    Splash, ErrorSplash,
+    FormInput
 };

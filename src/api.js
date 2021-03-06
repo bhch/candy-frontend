@@ -20,9 +20,18 @@ const API_ENDPOINTS = {
 };
 
 
+axios.defaults.withCredentials = true;
+
 export default class API {
     constructor(name) {
         this.endpoint = BASE_API_URL + name + '/';
+
+        if ((document.cookie.split(';').filter((item) => item.trim().indexOf('csrftoken=') === 0)).length) {
+            let csrftoken = document.cookie.split(';').filter((item) => item.trim().indexOf('csrftoken=') === 0)[0].split('=')[1];
+            if (csrftoken) {
+                axios.defaults.headers.common['X-CSRFTOKEN'] = csrftoken;
+            }
+        }
     }
 
     createEntity(data, queryString) {
@@ -69,5 +78,10 @@ export default class API {
         });
 
         return promise;
+    }
+
+    /* basic methods */
+    post(endpoint, data) {
+        return axios.post(endpoint, data);
     }
 }

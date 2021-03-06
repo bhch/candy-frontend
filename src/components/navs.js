@@ -67,10 +67,10 @@ export class Nav extends Component {
                                 placement="right"
                                 selectedIndex={-1}
                                 options={[
-                                    {label: "Logout", onSelect: (e) => null},
+                                    {label: "Logout", onSelect: this.props.handleLogout},
                                 ]}
                             >
-                                <Icon name="person" className="nav-user-icon" /> username
+                                <Icon name="person" className="nav-user-icon" /> { this.props.user.name }
                             </DropdownButton>
                         </li>
                     </ul>
