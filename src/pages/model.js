@@ -11,6 +11,10 @@ export default class ModelPageGroup extends Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            refresh: false
+        }
+
         this.list_url = joinPaths(this.props.match.url, '/');
         this.add_url = joinPaths(this.props.match.url, '/add/');
         this.edit_url = joinPaths(this.props.match.url, '/:id/edit/');
@@ -24,6 +28,10 @@ export default class ModelPageGroup extends Component {
         // the component won't remount
         // if the model parameter changed in url
         // so need to refetch the new model's metadata
+    }
+
+    refreshPage = () => {
+        this.setState({refresh: !this.state.refresh});
     }
 
     render() {
@@ -40,9 +48,7 @@ export default class ModelPageGroup extends Component {
         if (!app.models.hasOwnProperty(model_param))
             return <Page404 location={this.props.location} />;
 
-
         const model = app.models[model_param];
-
 
         return (
             <div className="main">
@@ -60,17 +66,30 @@ export default class ModelPageGroup extends Component {
                     <Route 
                         path={URLS.model_list}
                         exact
-                        render={(props) => <ListPage {...props} model={model} key={model.endpoint} />} 
+                        render={(props) => <ListPage {...props} 
+                            model={model} 
+                            key={model.endpoint} 
+                            refresh={this.state.refresh}
+                            />
+                        } 
                     />
                     <Route 
                         path={URLS.model_add} 
                         exact 
-                        render={(props) => <AddPage {...props} model={model} />} 
+                        render={(props) => <AddPage {...props} 
+                            model={model} 
+                            refresh={this.state.refresh}
+                            />
+                        } 
                     />
                     <Route 
                         path={URLS.model_edit} 
                         exact 
-                        render={(props) => <EditPage {...props} model={model} />} 
+                        render={(props) => <EditPage {...props} 
+                            model={model} 
+                            refresh={this.state.refresh}
+                            />
+                        } 
                     />
                     <Route>
                         <p>404 Page Not Found.</p>
@@ -89,6 +108,8 @@ export class ListPage extends Component {
         this.state = {
             data: null,
             loading: true,
+            hasError: false,
+            errorType: null,
             list_limit: 20 // :TODO: get this value from backend
         };
 
@@ -97,29 +118,73 @@ export class ListPage extends Component {
 
     componentDidMount() {
         window.scrollTo(0, 0);
-        
+        this.queryApi();
         toast.showLoader();
-
-        let api = new API(this.api_endpoint);
-
-        api.getList()
-        .then((response) => {
-            this.setState({data: response.data, loading: false});
-            toast.hideAll();
-        })
-        .catch((err) => {
-            console.log(err);
-            this.setState({loading: false});
-            toast.error('Something went wrong. Try again.')
-        });
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.props.location.search !== prevProps.location.search
+            || this.props.refresh !== prevProps.refresh) {
+            this.setState({loading: true});
+            //:TODO: cancel previous api request before sending new one
+            this.queryApi();
+        }
 
+        if (this.state.loading !== prevState.loading) {
+            if (this.state.loading)
+                toast.showLoader();
+            else
+                toast.hideLoader();
+        }
     }
 
     componentWillUnmount() {
         toast.hideLoader();
+    }
+
+    
+    queryApi = () => {
+        //if (!this.props.permissions.can_view) 
+        //    return this.setState({loading: false});
+
+        let queryString = new URLSearchParams(this.props.location.search);
+        let page = Number(queryString.get('page')) || 1;
+
+        let limit = this.state.list_limit;
+        let offset = (page - 1) * limit;
+
+        queryString.delete('page');
+        queryString.set('limit', limit);
+        queryString.set('offset', offset);
+
+        let api = new API(this.api_endpoint);
+
+        api.getList(queryString.toString())
+        .then((response) => {
+            this.setState({loading: false, data: response.data});
+            window.scrollTo(0, 0);
+        })
+        .catch((error) => {
+            let errorType = 'CONNECTION_ERROR';
+
+            if (error.response)
+                errorType = error.response.status;
+            else
+                error.response = {};
+
+            if (error.response.status === 401) {
+                this.props.handleLogout(true);
+            } else {
+                this.setState({loading: false, hasError: true, errorType: errorType});
+                toast.showConnectionError(this.retryApi);
+            }
+
+        });
+    }
+
+    retryApi = () => {
+        this.setState({loading: true, hasError: false});
+        this.queryApi();
     }
 
     getCurrentPage = () => {
