@@ -1,6 +1,6 @@
 {
   "name": "candy",
-  "version": "0.7.0-pre-alpha",
+  "version": "0.7.1",
   "private": true,
   "dependencies": {
     "@rjsf/core": "^2.4.2",
