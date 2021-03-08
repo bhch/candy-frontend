@@ -56,6 +56,7 @@ export default class LoginPage extends Component {
 
         api.post(api.endpoint, {username: username, password: password})
         .then((response) => {
+            console.log(response.data);
             this.props.onLogin(response.data);
         })
         .catch((error) => {

@@ -47,13 +47,20 @@ var CACHED_REGEXP = {};
 
 export function reverse(to, args) {
     let toPath = CACHED_REGEXP[to];
+    let qs = ''; // querystring
 
     if (typeof toPath === 'undefined') {
+        // split querystring
+        if (to.indexOf('?') > -1)
+            [to, qs] = to.split('?')
+
         toPath = compile(to);
         CACHED_REGEXP[to] = toPath;
     }
 
-    return toPath(args);
+    let path = toPath(args);
+
+    return qs ? path + '?' + qs : path; 
 }
 
 

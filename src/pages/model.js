@@ -201,7 +201,7 @@ export class ListPage extends Component {
         return (
             <div className="content">
                 <div className="table-container">
-                    <TableToolbar />
+                    <TableToolbar filters={this.props.model.list_filters} />
                     <div className="table-outer">
                         <Table
                             data={this.state.data.results}
